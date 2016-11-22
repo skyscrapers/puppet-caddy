@@ -10,26 +10,32 @@ class caddy::install {
     group   => 'root',
   }
 
-  archive { "/tmp/${caddy::params::release_file_name}":
+  archive { $::caddy::archive_file:
     ensure        => present,
     extract       => true,
-    extract_path  => $caddy::params::install_path,
-    source        => $caddy::params::download_url,
+    extract_path  => $::caddy::install_path,
+    source        => $::caddy::download_url,
     # checksum      => '2ca09f0b36ca7d71b762e14ea2ff09d5eac57558',
     # checksum_type => 'sha1',
-    creates       => "${caddy::params::install_path}/caddy_linux_amd64",
+    creates       => "${::caddy::install_path}/caddy_linux_amd64",
     cleanup       => true,
     require       => File[$::caddy::install_path],
     user          => 'root',
     group         => 'root',
   }
 
+  exec { 'root permission':
+    command     => "/bin/chown -R root:root ${::caddy::install_path}",
+    subscribe   => Archive[$::caddy::archive_file],
+    refreshonly => true
+  }
+
   file { '/usr/local/bin/caddy':
     ensure  => link,
     mode    => '0755',
-    target  => "${caddy::params::install_path}/caddy_linux_amd64",
+    target  => "${::caddy::install_path}/caddy_linux_amd64",
     owner   => 'root',
     group   => 'root',
-    require => Archive["/tmp/${caddy::params::release_file_name}"]
+    require => Archive[$::caddy::archive_file]
   }
 }

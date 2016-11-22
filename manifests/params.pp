@@ -8,6 +8,7 @@ class caddy::params {
   $release_file_name = 'caddy_linux_amd64.tar.gz'
   $download_url = "https://github.com/mholt/caddy/releases/download/v${version}/${release_file_name}"
   $install_path = '/opt/caddy'
+  $archive_file = "/tmp/${release_file_name}"
   # TODO: support multiple service providers
   $service_name = 'caddy'
 }

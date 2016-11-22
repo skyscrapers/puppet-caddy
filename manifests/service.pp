@@ -7,7 +7,7 @@ class caddy::service {
     target  => "${::caddy::install_path}/init/linux-systemd/caddy.service",
     owner   => 'root',
     group   => 'root',
-    require => Archive["/tmp/${::caddy::release_file_name}"]
+    require => Archive[$::caddy::archive_file]
   }
 
   service { $::caddy::service_name:
