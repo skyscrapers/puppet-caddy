@@ -56,7 +56,7 @@ class caddy::install {
   }
 
   # Create the folder where the ssl certificates will be
-  file { $::caddy::certificates_directory:
+  file { $::caddy::certificates_path:
     ensure  => directory,
     mode    => '0750',
     owner   => $::caddy::user,

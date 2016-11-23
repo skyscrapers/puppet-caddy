@@ -12,13 +12,13 @@ class caddy::params {
   # TODO: support multiple service providers
   $service_name = 'caddy'
 
-  $config_directory = '/etc/caddy'
-  $caddyfile_path = "${config_directory}/Caddyfile"
+  $config_path = '/etc/caddy'
+  $caddyfile = "${config_path}/Caddyfile"
 
   $user = 'www-data'
   $group = 'www-data'
 
-  $certificates_directory = '/etc/ssl/caddy'
+  $certificates_path = '/etc/ssl/caddy'
 
   $default_address    = undef
   $default_port       = undef

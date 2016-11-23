@@ -5,31 +5,31 @@ class caddy::config (
   $default_port       = $::caddy::default_port,
   $default_directives = $::caddy::default_directives
 ) {
-  file { $::caddy::config_directory:
+  file { $::caddy::config_path:
     ensure  => directory,
     owner   => 'root',
     group   => 'root',
   }
 
-  concat { $::caddy::caddyfile_path:
+  concat { $::caddy::caddyfile:
     ensure  => present,
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    require => File[$::caddy::config_directory],
+    require => File[$::caddy::config_path],
     ensure_newline => true
   }
 
   if $default_address != undef or $default_port != undef { # This is to avoid a puppet warning when the template is empty
     concat::fragment { 'init':
-      target  => $::caddy::caddyfile_path,
+      target  => $::caddy::caddyfile,
       content => template('caddy/etc/caddy/Caddyfile.erb'),
       order   => '01',
     }
   }
 
   concat::fragment { 'default_directives':
-    target  => $::caddy::caddyfile_path,
+    target  => $::caddy::caddyfile,
     content => template('caddy/etc/caddy/Caddyfile_default_directives.erb'),
     order   => '99',
   }

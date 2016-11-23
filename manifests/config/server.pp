@@ -6,7 +6,7 @@ define caddy::config::server (
   $directives = {},
 ) {
   concat::fragment { "server_${title}":
-    target  => $::caddy::caddyfile_path,
+    target  => $::caddy::caddyfile,
     content => template('caddy/etc/caddy/Caddyfile_server.erb'),
     order   => '02',
   }
