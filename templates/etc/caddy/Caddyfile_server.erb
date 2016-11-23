@@ -1,3 +1,4 @@
+
 <%= @address %><%- unless @port.nil? -%>:<%= @port -%><%- end -%> {
   <%- @directives.each do |key, value| -%>
     <%- if value.is_a?(Hash) -%>

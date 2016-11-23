@@ -1,3 +1,1 @@
-:80
-gzip
-root /var/www
+<%- unless @default_address.nil? -%><%= @default_address %><%- end -%><%- unless @default_port.nil? -%>:<%= @default_port -%><%- end -%>
