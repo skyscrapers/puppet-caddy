@@ -54,4 +54,12 @@ class caddy::install {
     group   => 'root',
     require => Archive[$::caddy::archive_file]
   }
+
+  # Create the folder where the ssl certificates will be
+  file { $::caddy::certificates_directory:
+    ensure  => directory,
+    mode    => '0750',
+    owner   => $::caddy::user,
+    group   => $::caddy::group
+  }
 }

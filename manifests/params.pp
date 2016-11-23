@@ -17,4 +17,6 @@ class caddy::params {
 
   $user = 'www-data'
   $group = 'www-data'
+
+  $certificates_directory = '/etc/ssl/caddy'
 }
