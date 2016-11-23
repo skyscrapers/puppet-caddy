@@ -11,6 +11,7 @@ class caddy::config (
     group   => 'root',
   }
 
+  # TODO: test config or make service fail when there's an error
   concat { $::caddy::caddyfile:
     ensure  => present,
     mode    => '0644',
