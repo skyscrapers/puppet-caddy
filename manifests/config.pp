@@ -4,15 +4,22 @@ class caddy::config {
   file { $::caddy::config_directory:
     ensure  => directory,
     owner   => 'root',
-    group   => 'root'
+    group   => 'root',
   }
 
-  file { $::caddy::caddyfile_path:
-    ensure  => file,
+  concat { $::caddy::caddyfile_path:
+    ensure  => present,
     mode    => '0644',
-    content => template('caddy/etc/caddy/Caddyfile.erb'),
     owner   => 'root',
     group   => 'root',
-    require => File[$::caddy::config_directory]
+    require => File[$::caddy::config_directory],
   }
+
+  concat::fragment { 'init':
+    target  => $::caddy::caddyfile_path,
+    content => template('caddy/etc/caddy/Caddyfile.erb'),
+    order   => '01',
+  }
+
+  create_resources('caddy::config::server', hiera_hash('caddy::servers', {}), {})
 }
