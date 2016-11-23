@@ -12,6 +12,9 @@ class caddy::params {
   # TODO: support multiple service providers
   $service_name = 'caddy'
 
+  $config_directory = '/etc/caddy'
+  $caddyfile_path = "${config_directory}/Caddyfile"
+
   $user = 'www-data'
   $group = 'www-data'
 }
