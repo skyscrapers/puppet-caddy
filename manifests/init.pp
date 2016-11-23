@@ -9,7 +9,11 @@
 #   Defaults to 0.9.3
 #
 class caddy (
-  $version = $caddy::params::version
+  $version      = $::caddy::params::version,
+  $manage_user  = true,
+  $manage_group = true,
+  $user         = $::caddy::params::user,
+  $group        = $::caddy::params::group
 ) inherits caddy::params {
   include caddy::install
   include caddy::config

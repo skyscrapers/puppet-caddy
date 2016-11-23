@@ -3,6 +3,22 @@
 class caddy::install {
   include ::archive
 
+  if $::caddy::manage_user {
+    user { $::caddy::user:
+      comment => 'Caddy user',
+      home    => '/var/www',
+      ensure  => present,
+      shell   => '/usr/sbin/nologin',
+      gid     => $::caddy::group,
+    }
+  }
+
+  if $::caddy::manage_group {
+    group { $::caddy::group:
+      ensure => present
+    }
+  }
+
   file { $::caddy::install_path:
     ensure  => directory,
     recurse => true,

@@ -11,4 +11,7 @@ class caddy::params {
   $archive_file = "/tmp/${release_file_name}"
   # TODO: support multiple service providers
   $service_name = 'caddy'
+
+  $user = 'www-data'
+  $group = 'www-data'
 }
