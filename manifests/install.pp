@@ -62,4 +62,11 @@ class caddy::install {
     owner   => $::caddy::user,
     group   => $::caddy::group
   }
+
+  # Allow caddy web server to listen on privileged ports (< 1024)
+  exec { "setcap cap_net_bind_service=+ep ${::caddy::install_path}/caddy_linux_amd64":
+    path      => ['/sbin', '/usr/sbin', '/bin', '/usr/bin', ],
+    subscribe => Archive[$::caddy::archive_file],
+    unless    => "getcap ${::caddy::install_path}/caddy_linux_amd64 | grep cap_net_bind_service+ep",
+  }
 }
