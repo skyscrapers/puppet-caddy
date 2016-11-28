@@ -19,8 +19,4 @@ class caddy::params {
   $group = 'www-data'
 
   $certificates_path = '/etc/ssl/caddy'
-
-  $default_address    = undef
-  $default_port       = undef
-  $default_directives = {}
 }

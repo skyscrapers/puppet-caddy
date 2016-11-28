@@ -14,9 +14,6 @@ class caddy (
   $manage_group       = true,
   $user               = $::caddy::params::user,
   $group              = $::caddy::params::group,
-  $default_address    = $::caddy::params::default_address,
-  $default_port       = $::caddy::params::default_port,
-  $default_directives = $::caddy::params::default_directives
 ) inherits caddy::params {
   include caddy::install
   include caddy::config
