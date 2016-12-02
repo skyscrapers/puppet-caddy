@@ -17,6 +17,8 @@ class caddy::params {
 
   $user = 'www-data'
   $group = 'www-data'
-  $install_method = 'source'
   $certificates_path = '/etc/ssl/caddy'
+
+  # Allowed values: archive, source
+  $install_method = 'archive'
 }
