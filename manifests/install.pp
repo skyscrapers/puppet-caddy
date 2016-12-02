@@ -1,8 +1,6 @@
 # == Class: caddy::install
 #
 class caddy::install {
-  include ::archive
-
   if $::caddy::manage_user {
     user { $::caddy::user:
       comment => 'Caddy user',
@@ -19,11 +17,10 @@ class caddy::install {
     }
   }
 
-  if !defined(Class['golang']) {
-    include golang
-  }
   case $::caddy::install_method {
-    'archive':{
+    'archive': {
+      include ::archive
+
       file { $::caddy::install_path:
         ensure  => directory,
         recurse => true,
@@ -46,31 +43,34 @@ class caddy::install {
       }
 
       exec { 'root permission':
-      command     => "/bin/chown -R root:root ${::caddy::install_path}",
-      subscribe   => Archive[$::caddy::archive_file],
-      refreshonly => true
-    }
+        command     => "/bin/chown -R root:root ${::caddy::install_path}",
+        subscribe   => Archive[$::caddy::archive_file],
+        refreshonly => true
+      }
 
-    file { '/usr/local/bin/caddy':
-    ensure  => link,
-    mode    => '0755',
-    target  => "${::caddy::install_path}/caddy_linux_amd64",
-    owner   => 'root',
-    group   => 'root',
-    require => Archive[$::caddy::archive_file]
+      file { '/usr/local/bin/caddy':
+        ensure  => link,
+        mode    => '0755',
+        target  => "${::caddy::install_path}/caddy_linux_amd64",
+        owner   => 'root',
+        group   => 'root',
+        require => Archive[$::caddy::archive_file]
+      }
+    }
+    'source' : {
+      include ::golang
+
+      exec { "${golang::base_dir}/bin/go get github.com/mholt/caddy":
+        environment => [
+          "GOPATH=${golang::workdir}",
+          "GOROOT=${golang::base_dir}"
+        ],
+        creates => "${golang::workdir}bin/caddy",
+        require => Class['golang::install']
+      }
     }
   }
-  'source' :{
-    exec { "${golang::base_dir}/bin/go get github.com/mholt/caddy/caddy":
-      environment => [
-        "GOPATH=${golang::workdir}",
-        "GOROOT=${golang::base_dir}"
-      ],
-      creates => "${golang::workdir}bin/caddy",
-      require => Class['golang::install']
-    }
-  }
-}
+
   # Create the folder where the ssl certificates will be
   file { $::caddy::certificates_path:
     ensure  => directory,
@@ -85,7 +85,5 @@ class caddy::install {
     subscribe => Archive[$::caddy::archive_file],
     unless    => "getcap ${::caddy::install_path}/caddy_linux_amd64 | grep cap_net_bind_service+ep",
   }
-
-
 
 }
