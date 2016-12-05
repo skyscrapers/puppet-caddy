@@ -1,8 +1,6 @@
 # == Class: caddy::install
 #
 class caddy::install {
-  include ::archive
-
   if $::caddy::manage_user {
     user { $::caddy::user:
       comment => 'Caddy user',
@@ -19,40 +17,62 @@ class caddy::install {
     }
   }
 
-  file { $::caddy::install_path:
-    ensure  => directory,
-    recurse => true,
-    owner   => 'root',
-    group   => 'root',
+  case $::caddy::install_method {
+    'archive': {
+      include ::archive
+
+      file { $::caddy::install_path:
+        ensure  => directory,
+        recurse => true,
+        owner   => 'root',
+        group   => 'root',
+      }
+
+      archive { $::caddy::archive_file:
+        ensure        => present,
+        extract       => true,
+        extract_path  => $::caddy::install_path,
+        source        => $::caddy::download_url,
+        # checksum      => '2ca09f0b36ca7d71b762e14ea2ff09d5eac57558',
+        # checksum_type => 'sha1',
+        creates       => "${::caddy::install_path}/${::caddy::bin_file_name}",
+        cleanup       => true,
+        require       => File[$::caddy::install_path],
+        user          => 'root',
+        group         => 'root',
+      }
+
+      exec { 'root permission':
+        command     => "/bin/chown -R root:root ${::caddy::install_path}",
+        subscribe   => Archive[$::caddy::archive_file],
+        refreshonly => true
+      }
+    }
+    'source' : {
+      $go_install_cmd = "${::golang::base_dir}/bin/go get github.com/mholt/caddy/caddy"
+      exec { "${go_install_cmd}":
+        environment => [
+          "GOPATH=${::golang::workdir}",
+          "GOROOT=${::golang::base_dir}"
+        ],
+        creates => "${::caddy::install_path}/${::caddy::bin_file_name}",
+        require => Class['golang::install']
+      }
+    }
   }
 
-  archive { $::caddy::archive_file:
-    ensure        => present,
-    extract       => true,
-    extract_path  => $::caddy::install_path,
-    source        => $::caddy::download_url,
-    # checksum      => '2ca09f0b36ca7d71b762e14ea2ff09d5eac57558',
-    # checksum_type => 'sha1',
-    creates       => "${::caddy::install_path}/caddy_linux_amd64",
-    cleanup       => true,
-    require       => File[$::caddy::install_path],
-    user          => 'root',
-    group         => 'root',
-  }
-
-  exec { 'root permission':
-    command     => "/bin/chown -R root:root ${::caddy::install_path}",
-    subscribe   => Archive[$::caddy::archive_file],
-    refreshonly => true
-  }
-
-  file { '/usr/local/bin/caddy':
-    ensure  => link,
-    mode    => '0755',
-    target  => "${::caddy::install_path}/caddy_linux_amd64",
-    owner   => 'root',
-    group   => 'root',
-    require => Archive[$::caddy::archive_file]
+  if "${::caddy::install_path}/${::caddy::bin_file_name}" != '/usr/local/bin/caddy' {
+    file { '/usr/local/bin/caddy':
+      ensure  => link,
+      mode    => '0755',
+      target  => "${::caddy::install_path}/${::caddy::bin_file_name}",
+      owner   => 'root',
+      group   => 'root',
+      require => $::caddy::install_method ? {
+        'source' => Exec[$go_install_cmd],
+        'archive' => Archive[$::caddy::archive_file]
+      }
+    }
   }
 
   # Create the folder where the ssl certificates will be
@@ -64,9 +84,12 @@ class caddy::install {
   }
 
   # Allow caddy web server to listen on privileged ports (< 1024)
-  exec { "setcap cap_net_bind_service=+ep ${::caddy::install_path}/caddy_linux_amd64":
+  exec { "setcap cap_net_bind_service=+ep ${::caddy::install_path}/${::caddy::bin_file_name}":
     path      => ['/sbin', '/usr/sbin', '/bin', '/usr/bin', ],
-    subscribe => Archive[$::caddy::archive_file],
-    unless    => "getcap ${::caddy::install_path}/caddy_linux_amd64 | grep cap_net_bind_service+ep",
+    subscribe => $::caddy::install_method ? {
+      'source' => Exec[$go_install_cmd],
+      'archive' => Archive[$::caddy::archive_file]
+    },
+    unless    => "getcap ${::caddy::install_path}/${::caddy::bin_file_name} | grep cap_net_bind_service+ep",
   }
 }
