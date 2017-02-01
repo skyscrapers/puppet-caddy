@@ -20,7 +20,7 @@ class caddy::install {
   case $::caddy::install_method {
     'archive': {
       include ::archive
-
+      $download_url = "https://github.com/mholt/caddy/releases/download/v${::caddy::version}/${::caddy::release_file_name}"
       file { $::caddy::install_path:
         ensure  => directory,
         recurse => true,

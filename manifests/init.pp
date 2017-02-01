@@ -14,7 +14,8 @@ class caddy (
   $manage_group       = true,
   $user               = $::caddy::params::user,
   $group              = $::caddy::params::group,
-  $install_method     = $::caddy::params::install_method
+  $install_method     = $::caddy::params::install_method,
+  $release_file_name  = $::caddy::params::release_file_name,
 ) inherits caddy::params {
   if $install_method == 'source' and !defined(Class['golang']) {
     class { 'golang':
