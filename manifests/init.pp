@@ -38,5 +38,6 @@ class caddy (
   include caddy::service
 
   Class['caddy::install'] -> Class['caddy::config']
+  Class['caddy::install'] ~> Class['caddy::service']
   Class['caddy::config'] ~> Class['caddy::service']
 }
