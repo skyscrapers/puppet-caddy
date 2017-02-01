@@ -32,7 +32,7 @@ class caddy::install {
         ensure        => present,
         extract       => true,
         extract_path  => $::caddy::install_path,
-        source        => $::caddy::download_url,
+        source        => $download_url,
         # checksum      => '2ca09f0b36ca7d71b762e14ea2ff09d5eac57558',
         # checksum_type => 'sha1',
         creates       => "${::caddy::install_path}/${::caddy::bin_file_name}",
