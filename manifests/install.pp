@@ -20,7 +20,6 @@ class caddy::install {
   case $::caddy::install_method {
     'archive': {
       include ::archive
-      $download_url = "https://github.com/mholt/caddy/releases/download/v${::caddy::version}/${::caddy::release_file_name}"
       file { $::caddy::install_path:
         ensure  => directory,
         recurse => true,
@@ -32,10 +31,13 @@ class caddy::install {
         ensure        => present,
         extract       => true,
         extract_path  => $::caddy::install_path,
-        source        => $download_url,
+        source        => $::caddy::archive_download_url ? {
+          undef   => "https://github.com/mholt/caddy/releases/download/v${::caddy::version}/${::caddy::release_file_name}",
+          default => $::caddy::archive_download_url
+        },
         # checksum      => '2ca09f0b36ca7d71b762e14ea2ff09d5eac57558',
         # checksum_type => 'sha1',
-        creates       => "${::caddy::install_path}/${::caddy::bin_file_name}",
+        creates       => "${::caddy::install_path}/${::caddy::real_bin_file_name}",
         cleanup       => true,
         require       => File[$::caddy::install_path],
         user          => 'root',
@@ -55,17 +57,17 @@ class caddy::install {
           "GOPATH=${::golang::workdir}",
           "GOROOT=${::golang::base_dir}"
         ],
-        creates => "${::caddy::install_path}/${::caddy::bin_file_name}",
+        creates => "${::caddy::install_path}/${::caddy::real_bin_file_name}",
         require => Class['golang::install']
       }
     }
   }
 
-  if "${::caddy::install_path}/${::caddy::bin_file_name}" != '/usr/local/bin/caddy' {
+  if "${::caddy::install_path}/${::caddy::real_bin_file_name}" != '/usr/local/bin/caddy' {
     file { '/usr/local/bin/caddy':
       ensure  => link,
       mode    => '0755',
-      target  => "${::caddy::install_path}/${::caddy::bin_file_name}",
+      target  => "${::caddy::install_path}/${::caddy::real_bin_file_name}",
       owner   => 'root',
       group   => 'root',
       require => $::caddy::install_method ? {
@@ -84,12 +86,12 @@ class caddy::install {
   }
 
   # Allow caddy web server to listen on privileged ports (< 1024)
-  exec { "setcap cap_net_bind_service=+ep ${::caddy::install_path}/${::caddy::bin_file_name}":
+  exec { "setcap cap_net_bind_service=+ep ${::caddy::install_path}/${::caddy::real_bin_file_name}":
     path      => ['/sbin', '/usr/sbin', '/bin', '/usr/bin', ],
     subscribe => $::caddy::install_method ? {
       'source' => Exec[$go_install_cmd],
       'archive' => Archive[$::caddy::archive_file]
     },
-    unless    => "getcap ${::caddy::install_path}/${::caddy::bin_file_name} | grep cap_net_bind_service+ep",
+    unless    => "getcap ${::caddy::install_path}/${::caddy::real_bin_file_name} | grep cap_net_bind_service+ep",
   }
 }
