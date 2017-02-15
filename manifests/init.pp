@@ -9,13 +9,15 @@
 #   Defaults to 0.9.3
 #
 class caddy (
-  $version            = $::caddy::params::version,
-  $manage_user        = true,
-  $manage_group       = true,
-  $user               = $::caddy::params::user,
-  $group              = $::caddy::params::group,
-  $install_method     = $::caddy::params::install_method,
-  $release_file_name  = $::caddy::params::release_file_name,
+  $version              = $::caddy::params::version,
+  $manage_user          = true,
+  $manage_group         = true,
+  $user                 = $::caddy::params::user,
+  $group                = $::caddy::params::group,
+  $install_method       = $::caddy::params::install_method,
+  $release_file_name    = $::caddy::params::release_file_name,
+  $archive_download_url = undef,
+  $bin_file_name        = $::caddy::params::bin_file_name,
 ) inherits caddy::params {
   if $install_method == 'source' and !defined(Class['golang']) {
     class { 'golang':
@@ -28,9 +30,9 @@ class caddy (
     'archive' => "${::caddy::params::install_path}",
   }
 
-  $bin_file_name = $install_method ? {
+  $real_bin_file_name = $install_method ? {
     'source'  => 'caddy',
-    'archive' => "${::caddy::params::bin_file_name}",
+    'archive' => $bin_file_name,
   }
 
   include caddy::install
