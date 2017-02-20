@@ -4,7 +4,13 @@
     <%- if value.is_a?(Hash) -%>
   <%= key -%> {
       <%- value.each do |parameter_key, parameter_value| -%>
+        <%- if parameter_value.is_a?(Array) -%>
+          <%- parameter_value.each do |final_param_value| -%>
+    <%= parameter_key -%> <%= final_param_value %>
+          <%- end -%>
+        <%- else -%>
     <%= parameter_key -%> <%= parameter_value %>
+        <%- end -%>
       <%- end -%>
   }
     <%- else -%>
