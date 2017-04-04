@@ -8,6 +8,12 @@
           <%- parameter_value.each do |final_param_value| -%>
     <%= parameter_key -%> <%= final_param_value %>
           <%- end -%>
+        <%- elsif parameter_value.is_a?(Hash) -%>
+    <%= parameter_key -%> {
+          <%- parameter_value.each do |final_param_key, final_param_value| -%>
+      <%= final_param_key -%> <%= final_param_value %>
+          <%- end -%>
+    }
         <%- else -%>
     <%= parameter_key -%> <%= parameter_value %>
         <%- end -%>
