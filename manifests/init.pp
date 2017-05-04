@@ -18,6 +18,7 @@ class caddy (
   $release_file_name    = $::caddy::params::release_file_name,
   $archive_download_url = undef,
   $bin_file_name        = $::caddy::params::bin_file_name,
+  $log_path             = $::caddy::params::log_path,
 ) inherits caddy::params {
   if $install_method == 'source' and !defined(Class['golang']) {
     class { 'golang':
