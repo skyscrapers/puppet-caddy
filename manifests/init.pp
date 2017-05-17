@@ -15,7 +15,11 @@ class caddy (
   $user                 = $::caddy::params::user,
   $group                = $::caddy::params::group,
   $install_method       = $::caddy::params::install_method,
-  $release_file_name    = $::caddy::params::release_file_name,
+  $release_file_name    = versioncmp('0.9.99', $version) ? {
+    1 => 'caddy_linux_amd64.tar.gz',
+    default => "caddy_v${version}_linux_amd64.tar.gz"
+  },
+  $archive_file         = "/tmp/${release_file_name}",
   $archive_download_url = undef,
   $bin_file_name        = $::caddy::params::bin_file_name,
   $log_path             = $::caddy::params::log_path,
