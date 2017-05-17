@@ -1,11 +1,18 @@
 # == Class: caddy::params
 #
 class caddy::params {
+  include ::caddy
+
   $version = '0.9.3'
   # TODO: support multiple architectures (386 and 64 bit)
   # TODO: support multiple os
   $bin_file_name = 'caddy_linux_amd64'
-  $release_file_name = 'caddy_linux_amd64.tar.gz'
+  $release_file_name = versioncmp('0.9.99', $caddy::version) ? {
+    # 1 => 'caddy_linux_amd64.tar.gz',
+    # default => "caddy_v${version}_linux_amd64.tar.gz"
+    1 => "caddy_v${version}_linux_amd64.tar.gz",
+    default => 'caddy_linux_amd64.tar.gz'
+  }
   $install_path = '/opt/caddy'
   $archive_file = "/tmp/${release_file_name}"
   # TODO: support multiple service providers
