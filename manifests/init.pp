@@ -19,9 +19,12 @@ class caddy (
   $log_path             = $::caddy::params::log_path,
 ) inherits caddy::params {
 
-  $release_file_name    = versioncmp('0.9.99', $version) ? {
-    1 => 'caddy_linux_amd64.tar.gz',
-    default => "caddy_v${version}_linux_amd64.tar.gz"
+  if versioncmp('0.9.99', $version) > 0 {
+    $archive_real_bin_file_name = 'caddy_linux_amd64'
+    $release_file_name          = 'caddy_linux_amd64.tar.gz'
+  } else {
+    $archive_real_bin_file_name = 'caddy'
+    $release_file_name          = "caddy_v${version}_linux_amd64.tar.gz"
   }
   $archive_file         = "/tmp/${release_file_name}"
 
@@ -38,10 +41,7 @@ class caddy (
 
   $real_bin_file_name = $install_method ? {
     'source'  => 'caddy',
-    'archive' => versioncmp('0.9.99', $version)? {
-      1 => 'caddy_linux_amd64',
-      default => 'caddy'
-    },
+    'archive' => $archive_real_bin_file_name
   }
 
   include caddy::install
