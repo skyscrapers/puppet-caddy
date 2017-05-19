@@ -95,7 +95,7 @@ class caddy::install {
 
   # Allow caddy web server to listen on privileged ports (< 1024)
   exec { 'setcap':
-    command = "setcap cap_net_bind_service=+ep ${::caddy::install_path}/${::caddy::real_bin_file_name}",
+    command   => "setcap cap_net_bind_service=+ep ${::caddy::install_path}/${::caddy::real_bin_file_name}",
     path      => ['/sbin', '/usr/sbin', '/bin', '/usr/bin', ],
     subscribe => $::caddy::install_method ? {
       'source'  => Exec[$go_install_cmd],
