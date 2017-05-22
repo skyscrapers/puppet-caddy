@@ -15,7 +15,7 @@ Group=<%= scope.lookupvar('caddy::group') %>
 Environment=HOME=<%= scope.lookupvar('caddy::certificates_path') %>
 
 ; Always set "-root" to something safe in case it gets forgotten in the Caddyfile.
-ExecStart=/usr/local/bin/caddy -log <%= scope.lookupvar('caddy::log_path') %>/server.log -agree=true -conf=/etc/caddy/Caddyfile -root=/var/tmp
+ExecStart=/usr/local/bin/caddy -log stdout -agree=true -conf=/etc/caddy/Caddyfile -root=/var/tmp
 ExecReload=/bin/kill -USR1 $MAINPID
 
 ; Limit the number of file descriptors; see `man systemd.exec` for more limit settings.

@@ -43,10 +43,17 @@ In hiera data:
 ---
   caddy::servers:
     'www.caddy.com':
-      log: '/var/log/access.log'
+      log: 'stdout'
       gzip: ''
       'markdown /blog':
         css: '/blog.css'
         js: '/scripts.js'
 
 ```
+
+For setups managed by `systemd`, try to use `log stdout` and `errors stderr` as much as possible for the logs to end up in `journald`.
+With `journalctl` it is quite easy to search for specific log entries in a unified way.
+
+E.g. search for LetsEncrypt rate limiting messages in the last 5 days:
+
+`$ journalctl -u caddy -p err --since "5 days ago"`
