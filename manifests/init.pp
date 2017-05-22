@@ -16,7 +16,6 @@ class caddy (
   $group                = $::caddy::params::group,
   $install_method       = $::caddy::params::install_method,
   $archive_download_url = undef,
-  $log_path             = $::caddy::params::log_path,
 ) inherits caddy::params {
 
   if versioncmp('0.9.99', $version) > 0 {

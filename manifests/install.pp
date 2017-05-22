@@ -77,14 +77,6 @@ class caddy::install {
     }
   }
 
-  # Create the folder where the log files end up in
-  file { $::caddy::log_path:
-    ensure => 'directory',
-    mode   => '0750',
-    owner  => $::caddy::user,
-    group  => $::caddy::group,
-  }
-
   # Create the folder where the ssl certificates will be
   file { $::caddy::certificates_path:
     ensure => directory,
