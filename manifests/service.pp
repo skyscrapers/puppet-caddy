@@ -10,10 +10,17 @@ class caddy::service {
     group   => 'root'
   }
 
+  exec { 'caddy-systemd-reload':
+    command     => 'systemctl daemon-reload',
+    path        => [ '/usr/bin', '/bin', '/usr/sbin' ],
+    refreshonly => true,
+  }
+
   service { $::caddy::service_name:
     ensure    => running,
     enable    => true,
-    require   => File[$service_file],
-    subscribe => File[$service_file]
+    require   => File[$service_file]
   }
+
+  File[$service_file] ~> Exec['caddy-systemd-reload'] ~> Service[$::caddy::service_name]
 }
