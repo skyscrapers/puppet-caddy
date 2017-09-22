@@ -43,11 +43,12 @@ In hiera data:
 ---
   caddy::servers:
     'www.caddy.com':
-      log: 'stdout'
-      gzip: ''
-      'markdown /blog':
-        css: '/blog.css'
-        js: '/scripts.js'
+      directives:
+        log: 'stdout'
+        gzip: ''
+        'markdown /blog':
+          css: '/blog.css'
+          js: '/scripts.js'
 
 ```
 
