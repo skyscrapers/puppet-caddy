@@ -1,7 +1,7 @@
 # == Class: caddy::params
 #
 class caddy::params {
-  $version = '0.9.3'
+  $version = '1.0.4'
   # TODO: support multiple architectures (386 and 64 bit)
   # TODO: support multiple os
   $install_path = '/opt/caddy'

@@ -4,6 +4,7 @@ class caddy::config (
 ) {
   file { $::caddy::config_path:
     ensure => directory,
+    mode   => '0755',
     owner  => 'root',
     group  => 'root',
   }

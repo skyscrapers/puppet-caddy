@@ -1,6 +1,6 @@
 {
   "name": "puppet-caddy",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "skyscrapers.eu",
   "summary": "Puppet module to setup Caddy web server",
   "license": "MIT",
