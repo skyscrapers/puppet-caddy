@@ -14,6 +14,7 @@ class caddy (
   $manage_group         = true,
   $user                 = $::caddy::params::user,
   $group                = $::caddy::params::group,
+  $certificates_path    = $::caddy::params::certificates_path,
   $install_method       = $::caddy::params::install_method,
   $archive_download_url = undef,
 ) inherits caddy::params {
