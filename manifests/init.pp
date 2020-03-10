@@ -6,7 +6,7 @@
 #
 # version
 #   Release of the Caddy web server to install
-#   Defaults to 0.9.3
+#   Defaults to 1.0.4
 #
 class caddy (
   $version              = $::caddy::params::version,
@@ -35,7 +35,7 @@ class caddy (
 
   $install_path = $install_method ? {
     'source'  => "${::golang::workdir}bin",
-    'archive' => "${::caddy::params::install_path}",
+    'archive' => $::caddy::params::install_path,
   }
 
   $real_bin_file_name = $install_method ? {

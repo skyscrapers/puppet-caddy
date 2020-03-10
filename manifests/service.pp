@@ -17,9 +17,9 @@ class caddy::service {
   }
 
   service { $::caddy::service_name:
-    ensure    => running,
-    enable    => true,
-    require   => File[$service_file]
+    ensure  => running,
+    enable  => true,
+    require => File[$service_file]
   }
 
   File[$service_file] ~> Exec['caddy-systemd-reload'] ~> Service[$::caddy::service_name]
