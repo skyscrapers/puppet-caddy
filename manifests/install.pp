@@ -32,7 +32,7 @@ class caddy::install {
         extract      => true,
         extract_path => $::caddy::install_path,
         source       => $::caddy::archive_download_url ? {
-          undef   => "https://github.com/mholt/caddy/releases/download/v${::caddy::version}/${::caddy::release_file_name}",
+          undef   => "https://github.com/caddyserver/caddy/releases/download/v${::caddy::version}/${::caddy::release_file_name}",
           default => $::caddy::archive_download_url
         },
         # checksum      => '2ca09f0b36ca7d71b762e14ea2ff09d5eac57558',
