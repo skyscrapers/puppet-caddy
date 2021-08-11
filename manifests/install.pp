@@ -51,7 +51,7 @@ class caddy::install {
       }
     }
     'source' : {
-      $go_install_cmd = "${::golang::base_dir}/bin/go get github.com/mholt/caddy/caddy"
+      $go_install_cmd = "${::golang::base_dir}/bin/go get github.com/caddyserver/caddy/caddy"
       exec { $go_install_cmd:
         environment => [
           "GOPATH=${::golang::workdir}",
