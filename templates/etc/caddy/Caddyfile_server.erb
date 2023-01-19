@@ -1,7 +1,27 @@
 
 <%= @address %><%- unless @port.nil? -%>:<%= @port -%><%- end -%> {
   <%- @directives.each do |key, value| -%>
-    <%- if value.is_a?(Hash) -%>
+    <%- if value.is_a?(Array) -%>
+      <%- value.each do |array_param_value| -%>
+  <%= key -%> {
+      <%- array_param_value.each do |parameter_key, parameter_value| -%>
+        <%- if parameter_value.is_a?(Array) -%>
+          <%- parameter_value.each do |final_param_value| -%>
+    <%= parameter_key -%> <%= final_param_value %>
+          <%- end -%>
+        <%- elsif parameter_value.is_a?(Hash) -%>
+    <%= parameter_key -%> {
+          <%- parameter_value.each do |final_param_key, final_param_value| -%>
+      <%= final_param_key -%> <%= final_param_value %>
+          <%- end -%>
+    }
+        <%- else -%>
+    <%= parameter_key -%> <%= parameter_value %>
+        <%- end -%>
+      <%- end -%>
+  }
+      <%- end -%>
+    <%- elsif value.is_a?(Hash) -%>
   <%= key -%> {
       <%- value.each do |parameter_key, parameter_value| -%>
         <%- if parameter_value.is_a?(Array) -%>
